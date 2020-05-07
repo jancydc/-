@@ -1,0 +1,32 @@
+
+# coding：utf-8
+import requests
+from lxml import etree
+import pymongo
+def write_to_mongodb(conn_table):
+    url = 'https://github.com/ybdesire/yuzaishi_candidate_exam/blob/' \
+          'master/exam_recommendation_system_intern.md'
+    try:
+        response = requests.get(url)
+        content = response.content.decode('utf-8')
+        tree = etree.HTML(content)
+        # 转为字符串
+        p_list = tree.xpath('//*[@id="readme"]/article/pre/code')
+        conten = etree.tostring(p_list[0], encoding="utf-8", pretty_print=True,
+                                method="xml").decode('utf-8')
+        text = conten.split('<code>')[1].split('</code>')[0]
+        text_dicts = eval(text)  # 转化为字典
+        for i in range(len(text_dicts)):
+            text_dict = text_dicts[i]
+            conn_table.insert(text_dict)
+            print('插入成功')
+    except:
+        print('加载失败')
+if __name__ == '__main__':
+    # 创建连接，ip地址和端口号
+    client = pymongo.MongoClient("localhost", 27017)
+    # 连接的数据库
+    db = client.practice
+    # 连接的表
+    conn_table = db.news
+    write_to_mongodb(conn_table)
