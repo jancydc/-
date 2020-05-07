@@ -1,0 +1,26 @@
+# coding：utf-8
+import pymongo
+if __name__ == '__main__':
+    client = pymongo.MongoClient("localhost", 27017)
+    # 连接的数据库
+    db = client.practice
+    # 连接的表
+    conn_table = db.news
+    # 查询id为'2c37d8d8e07d981393e518f1ee365cb7'的新闻数据
+    try:
+        news = conn_table.find_one({'id': '2c37d8d8e07d981393e518f1ee365cb7'})
+        print(news, '\n')
+        # print('**'*20)
+        # 输出这条新闻的发布日期(不包括时间)
+        date = news['pubDate'].split(' ')[0]
+        # 统计这条新闻中出现了多少个“的”字
+        news = news['allList']
+        print('查询id为"2c37d8d8e07d981393e518f1ee365cb7"新闻:\n', news, '\n')
+        # print('**'*20)
+        count = 0
+        for i in range(len(news)):
+            count += len(news[i].split('的'))-1
+        print('新闻的发布日期:', date)
+        print('新闻中"的"的数量:', count)
+    except:
+        print('查找的新闻不存在')
