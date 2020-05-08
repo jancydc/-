@@ -10,13 +10,12 @@ if __name__ == '__main__':
     try:
         news = conn_table.find_one({'id': '2c37d8d8e07d981393e518f1ee365cb7'})
         print(news, '\n')
-        # print('**'*20)
-        # 输出这条新闻的发布日期(不包括时间)
-        date = news['pubDate'].split(' ')[0]
+        # 输出这条新闻的发布日期
+        date = news['_id'].generation_time.timetuple()
+        date = time.strftime("%Y-%m-%d %H:%M:%S", date)
         # 统计这条新闻中出现了多少个“的”字
         news = news['allList']
         print('查询id为"2c37d8d8e07d981393e518f1ee365cb7"新闻:\n', news, '\n')
-        # print('**'*20)
         count = 0
         for i in range(len(news)):
             count += len(news[i].split('的'))-1
